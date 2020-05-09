@@ -1,0 +1,4 @@
+*.o
+gen
+GEN.h
+corebox
