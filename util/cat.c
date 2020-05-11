@@ -68,9 +68,7 @@ COMMAND(cat, int argc, char *argv[]) {
 
 	while ((i = GET_OPT(argc, argv, optstring)) != -1) {
 		switch (i) {
-			case 'u':
-				buffered = false;
-				break;
+			case 'u': buffered = false; break;
 			case 'n':
 				if (!numbered)
 					numbered = NUMBER;
