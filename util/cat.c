@@ -10,7 +10,7 @@ static char optstring[] = "uetAnbTEsv";
 
 #ifdef _GNU_SOURCE
 	#include <getopt.h>
-struct option longopts[] = {
+static struct option longopts[] = {
     {"show-all", no_argument, NULL, 'A'},
     {"number", no_argument, NULL, 'n'},
     {"number-nonblank", no_argument, NULL, 'b'},
