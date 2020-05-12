@@ -37,6 +37,7 @@ COMMAND(id, int argc, char *argv[]) {
 
 	nl = '\n';
 	choice = 0;
+	cap = 0;
 	pass = NULL;
 	groups = NULL;
 	use_name = false;
@@ -146,7 +147,7 @@ COMMAND(id, int argc, char *argv[]) {
 		printf("uid=%u(%s) ", pass->pw_uid, pass->pw_name);
 		printf("gid=%u(%s) ", pass->pw_gid, grp ? grp->gr_name : NULL);
 		printf("groups=");
-		for (i = 0; groups[i] && i < cap; ++i) {
+		for (i = 0; i < cap; ++i) {
 			grp = getgrgid(groups[i]);
 			printf("%u(%s)", groups[i], grp ? grp->gr_name : NULL);
 
