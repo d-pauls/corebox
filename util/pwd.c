@@ -27,12 +27,14 @@ static struct option longopts[] = {
 #endif
 
 COMMAND(pwd, int argc, char *argv[]) {
+	struct stat a, b;
 	int size, c;
 	char *wd, *tmp;
 	bool logical;
 
 	logical = false;
 	size = PATH_MAX;
+	wd = NULL;
 
 	while ((c = GET_OPT(argc, argv, optstring)) != -1) {
 		switch (c) {
@@ -42,30 +44,20 @@ COMMAND(pwd, int argc, char *argv[]) {
 		}
 	}
 
-	if (!(wd = malloc(size))) {
-		fprintf(stderr, "%s: %s\n", argv[0], strerror(errno));
-		return 1;
-	}
-
-	while (!getcwd(wd, size)) {
-		if (errno != ERANGE || !(wd = realloc(wd, size *= 2))) {
+	while (!wd || !getcwd(wd, size)) {
+		if ((errno && errno != ERANGE) ||
+		    !(wd = realloc(wd, size *= 2))) {
 			fprintf(stderr, "%s: %s\n", argv[0], strerror(errno));
 			return 1;
 		}
 	}
 
-	if (logical && (tmp = getenv("PWD"))) {
-		struct stat a, b;
-		if (stat(wd, &a) || stat(tmp, &b))
-			logical = false;
-		else if (a.st_dev == b.st_dev && a.st_ino == b.st_ino)
-			puts(tmp);
-		else
-			logical = false;
-	}
-
-	if (!logical)
+	if (logical && (tmp = getenv("PWD")) && !stat(wd, &a) &&
+	    !stat(tmp, &b) && a.st_dev == b.st_dev && a.st_ino == b.st_ino) {
+		puts(tmp);
+	} else {
 		puts(wd);
+	}
 
 	free(wd);
 
