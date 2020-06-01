@@ -6,24 +6,20 @@
 
 #include "command.h"
 
+#ifndef OS_NAME
+	#define OS_NAME unknown
+#endif
+
 enum UNAME {
 	SYS = (1 << 0),
 	NODE = (1 << 1),
 	REL = (1 << 2),
 	VER = (1 << 3),
 	MACH = (1 << 4),
-
-#ifdef _GNU_SOURCE
-	DOM = (1 << 5),
-#endif
-
+	OS = (1 << 5),
 };
 
-#ifdef _GNU_SOURCE
-	#define ALL (SYS | NODE | REL | VER | MACH | DOM)
-#else
-	#define ALL (SYS | NODE | REL | VER | MACH)
-#endif
+#define ALL (SYS | NODE | REL | VER | MACH | OS)
 
 COMMAND(uname, int argc, char *argv[]) {
 	enum UNAME bitmap;
@@ -41,7 +37,7 @@ COMMAND(uname, int argc, char *argv[]) {
 
 	bitmap = 0;
 
-	while ((i = getopt(argc, argv, "amnrsv")) != -1) {
+	while ((i = getopt(argc, argv, "amnrsvo")) != -1) {
 		switch (i) {
 			case 'a': bitmap = ALL; break;
 			case 'm': bitmap |= MACH; break;
@@ -49,6 +45,7 @@ COMMAND(uname, int argc, char *argv[]) {
 			case 'r': bitmap |= REL; break;
 			case 's': bitmap |= SYS; break;
 			case 'v': bitmap |= VER; break;
+			case 'o': bitmap |= OS; break;
 			default: return 1;
 		}
 	}
@@ -62,11 +59,8 @@ COMMAND(uname, int argc, char *argv[]) {
 		bitmap = SYS;
 
 	const char *uname_stats[] = {
-	    name.sysname,    name.nodename, name.release,
-	    name.version,    name.machine,
-#ifdef _GNU_SOURCE
-	    name.domainname,
-#endif
+	    name.sysname, name.nodename, name.release,
+	    name.version, name.machine,	 MACRO_STR(OS_NAME),
 	};
 
 	int max = (int) sizeof(uname_stats) / sizeof(*uname_stats);

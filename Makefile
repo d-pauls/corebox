@@ -1,6 +1,12 @@
 TARGET := corebox
 CONFIG := .config
 COMMANDS := $(shell ./cmd.sh $(CONFIG))
+OS_NAME := '$(shell uname -o)'
+
+ifeq ($(.SHELLSTATUS),0)
+CFLAGS := -DOS_NAME=$(OS_NAME) $(CFLAGS)
+endif
+
 OBJ := main.o
 OBJ += $(addprefix util/, $(addsuffix .o,$(COMMANDS)))
 CFLAGS += -I.
