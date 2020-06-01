@@ -119,6 +119,13 @@ COMMAND(base64, int argc, char *argv[]) {
 			}
 		}
 
+		if (errno) {
+			fprintf(
+			    stderr, "%s: %s: %s\n", argv[0], argv[i],
+			    strerror(errno));
+			return 1;
+		}
+
 		if (hold) {
 			putc(encode(hold), stdout);
 			for (c = 6; c > i / 2 + 1; c -= 2) {
@@ -165,6 +172,13 @@ COMMAND(base64, int argc, char *argv[]) {
 
 			if ((i += 2) == 10)
 				i = 2;
+		}
+
+		if (errno) {
+			fprintf(
+			    stderr, "%s: %s: %s\n", argv[0], argv[optind],
+			    strerror(errno));
+			return 1;
 		}
 
 		if (i != 2) {

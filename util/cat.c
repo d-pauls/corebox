@@ -52,7 +52,7 @@ static void translate_print(int num) {
 
 COMMAND(cat, int argc, char *argv[]) {
 	FILE *file;
-	int i, numbered, line, last;
+	int i, numbered, line, last, exit_code;
 	bool buffered, show_tabs, show_ends, squeeze, empty_nl, translate;
 
 	buffered = true;
@@ -61,6 +61,7 @@ COMMAND(cat, int argc, char *argv[]) {
 	squeeze = false;
 	translate = false;
 	numbered = 0;
+	exit_code = 0;
 	optind = 0; /* extern */
 
 	line = 0;
@@ -142,8 +143,16 @@ COMMAND(cat, int argc, char *argv[]) {
 			}
 		}
 
+		if (errno) {
+			fprintf(
+			    stderr, "%s: %s: %s\n", argv[0], argv[i],
+			    strerror(errno));
+			exit_code = 1;
+			errno = 0;
+		}
+
 		if (file != stdin)
 			fclose(file);
 	}
-	return 0;
+	return exit_code;
 }

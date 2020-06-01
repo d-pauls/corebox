@@ -26,7 +26,7 @@ static struct option longopts[] = {
 #endif
 
 COMMAND(head, int argc, char *argv[]) {
-	int i, num, size;
+	int i, num, size, exit_code;
 	char line_delimeter;
 	bool silent, bytes;
 
@@ -34,6 +34,7 @@ COMMAND(head, int argc, char *argv[]) {
 	bytes = false;
 	line_delimeter = '\n';
 	num = 10;
+	exit_code = 0;
 	optind = 0; /* extern */
 
 	while ((i = GET_OPT(argc, argv, optstring)) != -1) {
@@ -94,8 +95,16 @@ COMMAND(head, int argc, char *argv[]) {
 			putc(c, stdout);
 		}
 
+		if (errno) {
+			fprintf(
+			    stderr, "%s: %s: %s\n", argv[0], argv[i],
+			    strerror(errno));
+			exit_code = 1;
+			errno = 0;
+		}
+
 		if (file != stdin)
 			fclose(file);
 	}
-	return 0;
+	return exit_code;
 }
