@@ -6,6 +6,26 @@
 
 #include "command.h"
 
+static char optstring[] = "amnrsvo";
+
+#ifdef _GNU_SOURCE
+	#include <getopt.h>
+static struct option longopts[] = {
+    {"all", no_argument, NULL, 'a'},
+    {"machine", no_argument, NULL, 'm'},
+    {"nodename", no_argument, NULL, 'n'},
+    {"kernel-release", no_argument, NULL, 'r'},
+    {"kernel-name", no_argument, NULL, 's'},
+    {"kernel-version", no_argument, NULL, 'v'},
+    {"operating-system", no_argument, NULL, 'o'},
+    {NULL, 0, NULL, 0},
+};
+	#define GET_OPT(argc, argv, optstring) \
+		getopt_long(argc, argv, optstring, longopts, NULL)
+#else
+	#define GET_OPT(argc, argv, optstring) getopt(argc, argv, optstring)
+#endif
+
 #ifndef OS_NAME
 	#define OS_NAME unknown
 #endif
@@ -37,7 +57,7 @@ COMMAND(uname, int argc, char *argv[]) {
 
 	bitmap = 0;
 
-	while ((i = getopt(argc, argv, "amnrsvo")) != -1) {
+	while ((i = getopt(argc, argv, optstring)) != -1) {
 		switch (i) {
 			case 'a': bitmap = ALL; break;
 			case 'm': bitmap |= MACH; break;
