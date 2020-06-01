@@ -19,6 +19,7 @@ static char optstring[] = "LP";
 static struct option longopts[] = {
     {"logical", no_argument, NULL, 'L'},
     {"physical", no_argument, NULL, 'P'},
+    {NULL, 0, NULL, 0},
 };
 	#define GET_OPT(argc, argv, optstring) \
 		getopt_long(argc, argv, optstring, longopts, NULL)

@@ -15,6 +15,7 @@ static struct option longopts[] = {
     {"decode", no_argument, NULL, 'd'},
     {"ignore-garbage", no_argument, NULL, 'i'},
     {"wrap", required_argument, NULL, 'w'},
+    {NULL, 0, NULL, 0},
 };
 	#define GET_OPT(argc, argv, optstring) \
 		getopt_long(argc, argv, optstring, longopts, NULL)

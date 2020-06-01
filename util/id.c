@@ -14,9 +14,13 @@ static char optstring[] = "gGnruz";
 #ifdef _GNU_SOURCE
 	#include <getopt.h>
 struct option longopts[] = {
-    {"group", no_argument, NULL, 'g'}, {"groups", no_argument, NULL, 'G'},
-    {"name", no_argument, NULL, 'n'},  {"real", no_argument, NULL, 'r'},
-    {"user", no_argument, NULL, 'u'},  {"zero", no_argument, NULL, 'z'},
+    {"group", no_argument, NULL, 'g'},
+    {"groups", no_argument, NULL, 'G'},
+    {"name", no_argument, NULL, 'n'},
+    {"real", no_argument, NULL, 'r'},
+    {"user", no_argument, NULL, 'u'},
+    {"zero", no_argument, NULL, 'z'},
+    {NULL, 0, NULL, 0},
 };
 	#define GET_OPT(argc, argv, optstring) \
 		getopt_long(argc, argv, optstring, longopts, NULL)

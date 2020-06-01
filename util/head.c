@@ -17,6 +17,7 @@ static struct option longopts[] = {
     {"silent", no_argument, NULL, 'q'},
     {"verbose", no_argument, NULL, 'v'},
     {"zero-terminated", no_argument, NULL, 'z'},
+    {NULL, 0, NULL, 0},
 };
 	#define GET_OPT(argc, argv, optstring) \
 		getopt_long(argc, argv, optstring, longopts, NULL)
