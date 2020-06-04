@@ -57,7 +57,7 @@ COMMAND(uname, int argc, char *argv[]) {
 
 	bitmap = 0;
 
-	while ((i = getopt(argc, argv, optstring)) != -1) {
+	while ((i = GET_OPT(argc, argv, optstring)) != -1) {
 		switch (i) {
 			case 'a': bitmap = ALL; break;
 			case 'm': bitmap |= MACH; break;
