@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #include "GEN.h"
 #include "command.h"
@@ -20,23 +22,41 @@
 
 static void print_help(void) {
 	const char *commands[] = {HASH_LIST(STRINGIFY)};
-	size_t i, max;
+	const char begin[] = "\n      ";
+	size_t i, max, cols, pos, size;
+	struct winsize win;
 
-	printf(TGT " v" VERSION "\n\n");
-	printf("Usage: " TARGET " [function [arguments]...]\n");
-	printf("   or: function [arguments]...\n\n");
+	printf("" TGT " v" VERSION "\n\n"
+	       "Usage: " TARGET " [function [arguments]...]\n"
+	       "   or: function [arguments]...\n\n");
 
 	if (!sizeof(commands)) {
 		printf("No functions found...\n");
 		return;
 	}
 
-	printf("Currently defined functions:\n\t");
+	printf("Currently defined functions:%s", begin);
 
 	max = sizeof(commands) / sizeof(*commands);
+	pos = sizeof(begin) - 1;
+	cols = 0;
 
-	for (i = 0; i < max - 1; ++i)
+	if (isatty(STDOUT_FILENO) && !ioctl(STDOUT_FILENO, TIOCGWINSZ, &win)) {
+		cols = win.ws_col;
+	}
+
+	for (i = 0; i < max - 1; ++i) {
+		size = strlen(commands[i]) + 2;
+		if (cols && (pos += size) > cols) {
+			fputs(begin, stdout);
+			pos = sizeof(begin) - 1 + size;
+		}
 		printf("%s, ", commands[i]);
+	}
+
+	size = strlen(commands[i]) + 2;
+	if (cols && (pos += size) > cols)
+		fputs(begin, stdout);
 	printf("%s\n", commands[i]);
 }
 
