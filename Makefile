@@ -12,6 +12,9 @@ OBJ += $(addprefix util/, $(addsuffix .o,$(COMMANDS)))
 CFLAGS += -I.
 CFLAGS += -Wall -Wextra
 
+# directory to install to
+PREFIX ?= /usr/local/bin
+
 all: $(TARGET)
 
 $(TARGET): GEN.h $(OBJ)
@@ -23,7 +26,10 @@ main.o: main.c GEN.h
 GEN.h: gen $(CONFIG)
 	./gen $(COMMANDS) > GEN.h
 
-clean:
-	rm -f util/*.o *.o $(TARGET) gen
+install: $(TARGET)
+	./install.sh $(TARGET) '$(PREFIX)'
 
-.PHONY: all clean
+clean:
+	$(RM) -f util/*.o *.o $(TARGET) gen
+
+.PHONY: all clean install
