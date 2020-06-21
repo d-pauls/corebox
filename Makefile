@@ -29,7 +29,10 @@ GEN.h: gen $(CONFIG)
 install: $(TARGET)
 	./install.sh $(TARGET) '$(PREFIX)'
 
+uninstall: $(TARGET)
+	./uninstall.sh $(TARGET) '$(PREFIX)'
+
 clean:
 	$(RM) -f util/*.o *.o $(TARGET) gen
 
-.PHONY: all clean install
+.PHONY: all clean install uninstall
